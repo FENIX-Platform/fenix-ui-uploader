@@ -3,9 +3,11 @@ var distFolderPath = "dist",
     devFolderPath = "dev",
     webpack = require('webpack'),
     packageJson = require("./package.json"),
+    HtmlWebpackPlugin = require('html-webpack-plugin'),
     CleanWebpackPlugin = require('clean-webpack-plugin'),
     Path = require('path'),
     dependencies = Object.keys(packageJson.dependencies);
+
 
 module.exports = {
 
@@ -21,7 +23,14 @@ module.exports = {
         root: Path.resolve(__dirname),
         alias: {
             handlebars: 'handlebars/dist/handlebars.min.js',
-            jquery: Path.join(__dirname, 'node_modules/jquery/dist/jquery')
+            jquery: Path.join(__dirname, 'node_modules/jquery/dist/jquery'),
+            // plugin fatti coi piedi
+                'load-image': 'blueimp-load-image/js/load-image.js',
+                'load-image-meta': 'blueimp-load-image/js/load-image-meta.js',
+                'load-image-exif': 'blueimp-load-image/js/load-image-exif.js',
+                'canvas-to-blob': 'blueimp-canvas-to-blob/js/canvas-to-blob.js',
+                'jquery-ui/widget': 'blueimp-file-upload/js/vendor/jquery.ui.widget.js'
+
         }
     },
 
@@ -34,10 +43,16 @@ module.exports = {
     },
 
     plugins: clearArray([
+        new webpack.ProvidePlugin({$: "jquery", jQuery: "jquery"}),
         isDemo(undefined, new CleanWebpackPlugin([distFolderPath])),
+        isProduction(new CleanWebpackPlugin([distFolderPath]), undefined),
         isProduction(new webpack.optimize.UglifyJsPlugin({
             compress: {warnings: false},
             output: {comments: false}
+        })),
+        isDevelop(new HtmlWebpackPlugin({
+            inject: "body",
+            template: devFolderPath + "/index.template.html"
         }))
     ])
 
