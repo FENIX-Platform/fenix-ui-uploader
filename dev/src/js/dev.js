@@ -14,7 +14,10 @@ define([
     function Dev() {
         console.clear();
         log.setLevel("trace");
+
         this._render();
+
+        this._importThirdPartyCss();
 
     }
 
@@ -23,8 +26,15 @@ define([
         this.uploader = new Uploader();
 
         this.uploader.render({
-            container : s.DATA_UPLOADER
+            container : s.DATA_UPLOADER,
+            context : "4"
         });
+
+    };
+    Dev.prototype._importThirdPartyCss = function () {
+
+        //Bootstrap
+        require('bootstrap/dist/css/bootstrap.css');
 
     };
 

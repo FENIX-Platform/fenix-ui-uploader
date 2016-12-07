@@ -9,7 +9,12 @@ define([
 	'../html/item.hbs',
 	'q',
 	'spark-md5',
-	"loglevel"
+	"loglevel",
+	"blueimp-file-upload/js/vendor/jquery.ui.widget",
+	"blueimp-file-upload/js/jquery.iframe-transport",
+	"blueimp-file-upload",
+	"blueimp-file-upload/js/jquery.fileupload-process",
+	"blueimp-file-upload/js/jquery.fileupload-validate",
 ], function ($, _, uploadTemplate, itemTemplate, Q, SparkMD5, log) {
 
 	'use strict';
@@ -66,18 +71,8 @@ define([
 		log.info("FENIX Uploader");
 		log.info(opts);
 
-		/* The jQuery UI widget factory, can be omitted if jQuery UI is already included */
-		require('imports?define=>false&exports=>false!blueimp-file-upload/js/vendor/jquery.ui.widget.js');
-		/* The Iframe Transport is required for browsers without support for XHR file uploads */
-		//require('imports?define=>false&exports=>false!blueimp-file-upload/js/jquery.iframe-transport.js');
-		/* The basic File Upload plugin */
-		require('imports?define=>false&exports=>false!blueimp-file-upload/js/jquery.fileupload.js');
-		/* The File Upload processing plugin */
-		require('imports?define=>false&exports=>false!blueimp-file-upload/js/jquery.fileupload-process.js');
-		/* The File Upload validation plugin */
-		require('imports?define=>false&exports=>false!blueimp-file-upload/js/jquery.fileupload-validate.js');
-		/* The File Upload Angular JS module */
-		require('imports?define=>false&exports=>false!blueimp-file-upload/js/jquery.fileupload-angular.js');
+		//import css
+		require("../css/fenix-ui-uploader.css");
 
 		this.o = $.extend(true, {}, defaultOpts, opts);
 

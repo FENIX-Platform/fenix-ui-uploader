@@ -4,6 +4,7 @@ var distFolderPath = "dist",
     webpack = require('webpack'),
     packageJson = require("./package.json"),
     HtmlWebpackPlugin = require('html-webpack-plugin'),
+    ExtractTextPlugin = require("extract-text-webpack-plugin"),
     CleanWebpackPlugin = require('clean-webpack-plugin'),
     Path = require('path'),
     dependencies = Object.keys(packageJson.dependencies);
@@ -24,13 +25,7 @@ module.exports = {
         alias: {
             handlebars: 'handlebars/dist/handlebars.min.js',
             jquery: Path.join(__dirname, 'node_modules/jquery/dist/jquery'),
-            // plugin fatti coi piedi
-                'load-image': 'blueimp-load-image/js/load-image.js',
-                'load-image-meta': 'blueimp-load-image/js/load-image-meta.js',
-                'load-image-exif': 'blueimp-load-image/js/load-image-exif.js',
-                'canvas-to-blob': 'blueimp-canvas-to-blob/js/canvas-to-blob.js',
-                'jquery-ui/widget': 'blueimp-file-upload/js/vendor/jquery.ui.widget.js'
-
+            "jquery-ui/widget": Path.join(__dirname, 'node_modules/jquery.ui.widget/jquery.ui.widget'),
         }
     },
 
@@ -39,6 +34,21 @@ module.exports = {
     module: {
         loaders: [
             {test: /\.hbs$/, loader: "handlebars-loader"},
+            isProduction(
+                {test: /\.css$/, loader: ExtractTextPlugin.extract("style-loader", "css-loader")},
+                {test: /\.css$/, loader: "style-loader!css-loader"}
+            ),
+            {test: /\.png$/, loader: "url-loader?limit=100000"},
+            {test: /\.jpg$/, loader: "file-loader?name=[name].[ext]&limit=100000"},
+            {test: /\.svg/, loader: "file-loader?name=[name].[ext]&limit=100000"},
+            {test: /\.gif/, loader: "file-loader?name=[name].[ext]&limit=100000"},
+
+            //Bootstrap loader
+            {test: /bootstrap\/js\//, loader: 'imports?jQuery=jquery'},
+            {test: /\.woff(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&minetype=application/font-woff"},
+            {test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&minetype=application/font-woff"},
+            {test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&minetype=application/octet-stream"},
+            {test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file"}
         ]
     },
 
@@ -50,6 +60,7 @@ module.exports = {
             compress: {warnings: false},
             output: {comments: false}
         })),
+        isProduction(new ExtractTextPlugin(packageJson.name + '.min.css')),
         isDevelop(new HtmlWebpackPlugin({
             inject: "body",
             template: devFolderPath + "/index.template.html"
